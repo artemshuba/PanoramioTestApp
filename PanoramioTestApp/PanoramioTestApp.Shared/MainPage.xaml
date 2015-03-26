@@ -1,0 +1,73 @@
+﻿<controls:PageBase
+    x:Class="PanoramioTestApp.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:core="using:Microsoft.Xaml.Interactions.Core"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:controls="using:PanoramioTestApp.Controls"
+    xmlns:maps="using:PanoramioTestApp.Controls.Maps"
+    xmlns:behaviors="using:PanoramioTestApp.Behaviors"
+    xmlns:loadingIndicator="using:PanoramioTestApp.Controls.LoadingIndicator"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    DataContext="{Binding Main, Source={StaticResource Locator}}">
+
+    <Page.Resources>
+        <Storyboard x:Key="PhotoRibbonTransitionIn">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(RenderTransform).Y">
+                <DiscreteDoubleKeyFrame KeyTime="0" Value="100" />
+                <EasingDoubleKeyFrame KeyTime="0:0:0.9" Value="0">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <ExponentialEase Exponent="8" EasingMode="EaseOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
+                <DiscreteDoubleKeyFrame KeyTime="0" Value="0" />
+                <EasingDoubleKeyFrame KeyTime="0:0:0.5" Value="1">
+                    <EasingDoubleKeyFrame.EasingFunction>
+                        <ExponentialEase Exponent="8" EasingMode="EaseOut"/>
+                    </EasingDoubleKeyFrame.EasingFunction>
+                </EasingDoubleKeyFrame>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="0.3*"/>
+        </Grid.RowDefinitions>
+        <maps:MapView Grid.RowSpan="2" x:Name="Map" MapServiceToken="AqmMLhRuhYI_L5BnerE79fhLIpVDSrUAc6iJyTzcCTkICPUemQ81CUzYRfjaY7_1"
+                         Margin="0,0,0,0">
+            <interactivity:Interaction.Behaviors>
+                <core:EventTriggerBehavior EventName="MapTapped">
+                    <core:InvokeCommandAction 
+                        Command="{Binding MapTapCommand}"/>
+                </core:EventTriggerBehavior>
+            </interactivity:Interaction.Behaviors>
+        </maps:MapView>
+
+        <!-- Photos grid -->
+        <Grid Grid.Row="1" Background="#99000000">
+            <Grid.RenderTransform>
+                <TranslateTransform />
+            </Grid.RenderTransform>
+            <interactivity:Interaction.Behaviors>
+                <behaviors:VisibilityTransitionBehavior AnimationIn="{StaticResource PhotoRibbonTransitionIn}"
+                                                        Value="{Binding ShowPhotos, Converter={StaticResource BoolToVisibilityConverter}}"/>
+            </interactivity:Interaction.Behaviors>
+            <loadingIndicator:LoadingIndicator Padding="10" IsBusy="{Binding Tasks[photos].IsWorking}"
+                                               Error="{Binding Tasks[photos].Error}">
+                <controls:PhotoRibbonControl ItemsSource="{Binding Photos}"
+                                     PhotoCommand="{Binding GoToPhotoViewCommand}">
+                </controls:PhotoRibbonControl>
+            </loadingIndicator:LoadingIndicator>
+        </Grid>
+        
+        <controls:StatusControl Text="{Binding Tasks[location].Status}"
+                                IsWorking="{Binding Tasks[location].IsWorking}"/>
+    </Grid>
+</controls:PageBase>

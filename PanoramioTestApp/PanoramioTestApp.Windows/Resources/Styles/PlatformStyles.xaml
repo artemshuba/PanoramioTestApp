@@ -1,0 +1,22 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="using:PanoramioTestApp.Controls">
+    <!-- Platform specific styles -->
+    
+    <Style TargetType="controls:StatusControl">
+        <Setter Property="Background" Value="Black"/>
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="Visibility" Value="Collapsed" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:StatusControl">
+                    <Grid Background="{TemplateBinding Background}">
+                        <TextBlock Text="{TemplateBinding Text}" Margin="5,3,5,3" FontSize="14"/>
+                        <ProgressBar IsIndeterminate="{TemplateBinding IsWorking}" VerticalAlignment="Top"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
